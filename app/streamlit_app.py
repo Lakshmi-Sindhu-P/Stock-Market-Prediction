@@ -25,13 +25,14 @@ st.set_page_config(page_title="S&P 500 Forecast — walk-forward", layout="wide"
 
 @st.cache_data(show_spinner=False)
 def load() -> tuple[pd.DataFrame, dict]:
-    if not config.PREDICTIONS_CSV.exists():
-        st.error("No results yet. Run `python scripts/run_backtest.py` first.")
-        st.stop()
     preds = pd.read_csv(config.PREDICTIONS_CSV, parse_dates=["date"], index_col="date")
     metrics = json.loads(config.METRICS_JSON.read_text())
     return preds, metrics
 
+
+if not config.PREDICTIONS_CSV.exists():
+    st.error("No results yet. Run `python scripts/run_backtest.py` first.")
+    st.stop()
 
 preds, metrics = load()
 models = [m for m in ("persistence", "drift", "ridge", "lstm") if m in preds.columns]
@@ -115,7 +116,7 @@ for name in models:
         "hit rate": None if d["direction_acc"] is None else round(d["direction_acc"], 3),
         "DM p": None if not dm else round(dm["p_value"], 3),
     })
-st.dataframe(pd.DataFrame(rows), hide_index=True, use_container_width=True)
+st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch")
 
 with st.expander("How the backtest works"):
     st.markdown(
