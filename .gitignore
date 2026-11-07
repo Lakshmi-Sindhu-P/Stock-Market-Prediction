@@ -1,1 +1,16 @@
-stock-env/
+# environments
+.venv/
+.tmp/
+tmp/
+.uvcache/
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+# local reference clone
+repo/
+# OS
+.DS_Store
